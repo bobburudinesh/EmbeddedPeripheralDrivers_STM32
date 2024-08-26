@@ -9,6 +9,37 @@
 #define INC_STM32F407XX_H_
 #include <stdint.h>
 
+/*******************************START: Processor Specific Details***************************
+ * ARM Cortex M4 NVIC ISERx register Address
+ *
+ * */
+#define NVIC_ISER0   			((volatile uint32_t*)0xE000E100)
+#define NVIC_ISER1   			((volatile uint32_t*)0xE000E104)
+#define NVIC_ISER2   			((volatile uint32_t*)0xE000E108)
+#define NVIC_ISER3   			((volatile uint32_t*)0xE000E100c)
+
+
+/* ARM Cortex M4 NVIC ICERx register Address
+ *
+ * */
+#define NVIC_ICER0   			((volatile uint32_t*)0xE000E180)
+#define NVIC_ICER1   			((volatile uint32_t*)0xE000E184)
+#define NVIC_ICER2   			((volatile uint32_t*)0xE000E188)
+#define NVIC_ICER3   			((volatile uint32_t*)0xE000E18c)
+
+
+/*
+ * ARM Cortex Mx Processor Priority Register Address Calculation
+ *
+ * */
+#define NVIC_PR_BASE_ADDR 		((volatile uint32_t*)0xE000E400)
+
+
+
+#define NO_PR_BITS_IMPLEMENTED 	4
+
+
+
 /*
  *
  * base addresses of Flash and SRAM memories
@@ -78,6 +109,11 @@
 /*
  * NOTE: Registers of a peripheral are specific to MCU, Please check Device Reference manual
  * */
+
+/*
+ *
+ * Peripheral definition structure for GPIO
+ * */
 typedef struct {
 	volatile uint32_t MODER; /*GPIO port mode register, 0x00*/
 	volatile uint32_t OTYPER; /* GPIO port output type register, 0x04*/
@@ -90,39 +126,79 @@ typedef struct {
 	volatile uint32_t AFR[2];/*AFR[0]: GPIO alternate function low register, AFR[1]: GPIO alternate function high register*/
 }GPIO_RegDef_t;
 
+/*
+ *
+ * Peripheral definition structure for RCC
+ * */
 
 typedef struct {
-	uint32_t CR;
-	uint32_t PLLCFGR;
-	uint32_t CFGR;
-	uint32_t CIR;
-	uint32_t AHB1RSTR;
-	uint32_t AHB2RSTR;
-	uint32_t AHB3RSTR;
+	volatile uint32_t CR;
+	volatile uint32_t PLLCFGR;
+	volatile uint32_t CFGR;
+	volatile uint32_t CIR;
+	volatile uint32_t AHB1RSTR;
+	volatile uint32_t AHB2RSTR;
+	volatile uint32_t AHB3RSTR;
 	uint32_t RESERVED0;
-	uint32_t APB1RSTR;
-	uint32_t APB2RSTR;
+	volatile uint32_t APB1RSTR;
+	volatile uint32_t APB2RSTR;
 	uint32_t RESERVED1[2];
-	uint32_t AHB1ENR;
-	uint32_t AHB2ENR;
-	uint32_t AHB3ENR;
+	volatile uint32_t AHB1ENR;
+	volatile uint32_t AHB2ENR;
+	volatile uint32_t AHB3ENR;
 	uint32_t RESERVED2;
-	uint32_t APB1ENR;
-	uint32_t APB2ENR;
+	volatile uint32_t APB1ENR;
+	volatile uint32_t APB2ENR;
 	uint32_t RESERVED3[2];
-	uint32_t AHB1LPENR;
-	uint32_t AHB2LPENR;
-	uint32_t AHB3LPENR;
+	volatile uint32_t AHB1LPENR;
+	volatile uint32_t AHB2LPENR;
+	volatile uint32_t AHB3LPENR;
 	uint32_t RESERVED4;
-	uint32_t APB1LPENR;
-	uint32_t APB2LPENR;
+	volatile uint32_t APB1LPENR;
+	volatile uint32_t APB2LPENR;
 	uint32_t RESERVED5[2];
-	uint32_t BDCR;
-	uint32_t CSR;
+	volatile uint32_t BDCR;
+	volatile uint32_t CSR;
 	uint32_t RESERVED6[2];
-	uint32_t SSCGR;
-	uint32_t PLLI2SCFGR;
+	volatile uint32_t SSCGR;
+	volatile uint32_t PLLI2SCFGR;
 } RCC_RegDef_t;
+
+
+/*
+ *
+ * Peripheral definition structure for EXTI
+ * */
+typedef struct {
+	volatile uint32_t IMR;
+	volatile uint32_t EMR;
+	volatile uint32_t RTSR;
+	volatile uint32_t FTSR;
+	volatile uint32_t SWIER;
+	volatile uint32_t PR;
+}EXTI_RegDef_t;
+
+
+
+/*
+ *
+ * Peripheral definition structure for EXTI
+ * */
+typedef struct {
+	volatile uint32_t MEMRMP;
+	volatile uint32_t PMC;
+	volatile uint32_t EXTICR[4];
+	uint32_t RESERVED0[2];
+	volatile uint32_t CMPCR;
+	uint32_t RESERVED1[2];
+	volatile uint32_t CFGR;
+}SYSCFG_RegDef_t;
+
+
+
+
+
+
 
 /*
  * PERIPHERAL DEFINITIONS(PERIPHERAL BASE ADDRESS TYPE CASTED TO XXX_REGDEF_T)
@@ -138,6 +214,10 @@ typedef struct {
 #define GPIOI ((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #define RCC ((RCC_RegDef_t*)RCC_BASEADDR)
+
+#define EXTI ((EXTI_RegDef_t*)EXTI_BASEADDR)
+
+#define SYSCFG ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 /*
  * Clock Enable for Peripherals
@@ -269,6 +349,41 @@ typedef struct {
 #define GPIOG_REG_RESET()			do{(RCC->AHB1RSTR |= (1<<6));	(RCC->AHB1RSTR &= ~(1<<6));} while(0)
 #define GPIOH_REG_RESET()			do{(RCC->AHB1RSTR |= (1<<7));	(RCC->AHB1RSTR &= ~(1<<7));} while(0)
 #define GPIOI_REG_RESET()			do{(RCC->AHB1RSTR |= (1<<8));	(RCC->AHB1RSTR &= ~(1<<8));} while(0)
+
+
+
+/*
+ * Returns port code for given GPIOx base address
+ * */
+#define GPIO_BASEADDR_TO_CODE(x) 		((x == GPIOA) ? 0 :\
+										(x == GPIOB) ? 1 :\
+										(x == GPIOC) ? 2 :\
+										(x == GPIOD) ? 3 :\
+										(x == GPIOE) ? 4 :\
+										(x == GPIOF) ? 5 :\
+										(x == GPIOG) ? 6 :\
+										(x == GPIOH) ? 7 :0)
+
+
+/*
+ * IRQ Number Definitions
+ * */
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
+
+
+
+
+
+
+
+
+
 /*
  * Some Generic Macros
  * */
