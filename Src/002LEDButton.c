@@ -15,7 +15,6 @@ void delay(void) {
 int main(void) {
 	GPIO_Handle_t  GpioLED;
 	GPIO_Handle_t  GpioSwitch;
-	uint8_t value;
 	GpioLED.pGPIOx = GPIOD;
 	GpioLED.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
 	GpioLED.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
