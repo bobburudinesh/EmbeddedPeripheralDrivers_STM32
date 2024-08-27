@@ -88,8 +88,10 @@
 #define I2C2_BASEADDR  (APB1PERIPH_BASEADDR + 0x5800)
 #define I2C3_BASEADDR  (APB1PERIPH_BASEADDR + 0x5C00)
 
+
 #define SPI2_BASEADDR  (APB1PERIPH_BASEADDR + 0x3800)
 #define SPI3_BASEADDR  (APB1PERIPH_BASEADDR + 0x3C00)
+
 
 #define USART2_BASEADDR  (APB1PERIPH_BASEADDR + 0x4400)
 #define USART3_BASEADDR  (APB1PERIPH_BASEADDR + 0x4800)
@@ -101,6 +103,7 @@
  * */
 #define EXTI_BASEADDR (APB2PERIPH_BASEADDR + 0x3C00)
 #define SPI1_BASEADDR (APB2PERIPH_BASEADDR + 0x3000)
+#define SPI4_BASEADDR  (APB2PERIPH_BASEADDR + 0x3400)
 #define USART1_BASEADDR (APB2PERIPH_BASEADDR + 0x1000)
 #define USART6_BASEADDR (APB2PERIPH_BASEADDR + 0x1400)
 #define SYSCFG_BASEADDR (APB2PERIPH_BASEADDR + 0x3800)
@@ -196,8 +199,21 @@ typedef struct {
 
 
 
+/*
+ * Peripheral definition structure for SPI
+ * */
 
-
+typedef struct {
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t SR;
+	volatile uint32_t DR;
+	volatile uint32_t CRCPR;
+	volatile uint32_t RXCRCR;
+	volatile uint32_t TXCRCR;
+	volatile uint32_t I2sCFGR;
+	volatile uint32_t I2SPR;
+}SPI_RegDef_t;
 
 
 /*
@@ -218,6 +234,12 @@ typedef struct {
 #define EXTI ((EXTI_RegDef_t*)EXTI_BASEADDR)
 
 #define SYSCFG ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
+
+
+#define SPI1	((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2	((SPI_RegDef_t*)SPI2_BASEADDR)
+#define SPI3	((SPI_RegDef_t*)SPI3_BASEADDR)
+
 
 /*
  * Clock Enable for Peripherals
@@ -351,7 +373,12 @@ typedef struct {
 #define GPIOI_REG_RESET()			do{(RCC->AHB1RSTR |= (1<<8));	(RCC->AHB1RSTR &= ~(1<<8));} while(0)
 
 
-
+/*
+ * Macros to disable SPIx Peripherals
+ * */
+#define SPI1_RESET()					do{(RCC->APB2RSTR |= (1<<12)); (RCC->APB2RSTR &= ~(1<<12));}while(0)
+#define SPI2_RESET()					do{(RCC->APB1RSTR |= (1<<14)); (RCC->APB1RSTR &= ~(1<<14));}while(0)
+#define SPI3_RESET()					do{(RCC->APB1RSTR |= (1<<15)); (RCC->APB1RSTR &= ~(1<<15));}while(0)
 /*
  * Returns port code for given GPIOx base address
  * */
@@ -397,7 +424,63 @@ typedef struct {
 
 
 
+
+/*
+ * Bit Position definitions of SPI Peripheral
+ *
+ * */
+
+/*
+ * SPI CR1 BIT POSITION MACROS
+ * */
+#define SPI_CR1_CHPA		0
+#define SPI_CR1_CPOL		1
+#define SPI_CR1_MSTR		2
+#define SPI_CR1_BR2_0		3
+#define SPI_CR1_SPE			6
+#define SPI_CR1_LSBFIRST	7
+#define SPI_CR1_SSI			8
+#define SPI_CR1_SSM			9
+#define SPI_CR1_RXONLY		10
+#define SPI_CR1_DFF			11
+#define SPI_CR1_CRCNEXT		12
+#define SPI_CR1_CRCEN		13
+#define SPI_CR1_BIDIOE		14
+#define SPI_CR1_BIDIMODE	15
+
+/*
+ * SPI CR2 BIT POSITION MACROS
+ * */
+#define SPI_CR2_RXDMAEN		0
+#define SPI_CR2_TXDMAEN		1
+#define SPI_CR2_SSOE		2
+#define SPI_CR2_FRF			4
+#define SPI_CR2_ERRIE		5
+#define SPI_CR2_RXNEIE		6
+#define SPI_CR2_TXEIE		7
+
+/*
+ * SPI SR BIT POSITION MACROS
+ * */
+#define SPI_SR_RXNE			0
+#define SPI_SR_TXE			1
+#define SPI_SR_CHSIDE		2
+#define SPI_SR_UDR			3
+#define SPI_SR_CRCERR		4
+#define SPI_SR_MODF			5
+#define SPI_SR_OVR			6
+#define SPI_SR_BSY			7
+#define SPI_SR_FRE			8
+
+
+
 #include "stm32f407xx_gpio_driver.h"
+#include "stm32f407xx_spi_driver.h"
+
+
+/*
+ * SPI Related Clock Enable and Disable Macros
+ * */
 
 
 
