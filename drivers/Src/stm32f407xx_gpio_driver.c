@@ -99,7 +99,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 	}
 	temp = 0;
 	//2. CONFIGURE SPEED
-	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeeed << (2* pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed << (2* pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
 	pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3<<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 	pGPIOHandle->pGPIOx->OSPEEDR |= temp;
 	temp = 0;
