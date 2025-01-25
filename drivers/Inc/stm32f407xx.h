@@ -8,6 +8,7 @@
 #ifndef INC_STM32F407XX_H_
 #define INC_STM32F407XX_H_
 #include <stdint.h>
+#include<stddef.h>
 
 /*******************************START: Processor Specific Details***************************
  * ARM Cortex M4 NVIC ISERx register Address
@@ -395,6 +396,7 @@ typedef struct {
 /*
  * IRQ Number Definitions
  * */
+// GPIO IRQ Definitions
 #define IRQ_NO_EXTI0			6
 #define IRQ_NO_EXTI1			7
 #define IRQ_NO_EXTI2			8
@@ -404,6 +406,7 @@ typedef struct {
 #define IRQ_NO_EXTI15_10		40
 
 
+// SPI IRQ Definitions
 
 
 
@@ -420,6 +423,8 @@ typedef struct {
 #define RESET 			DISABLE
 #define GPIO_PIN_SET	SET
 #define GPIO_PIN_RESET  RESET
+#define FLAG_RESET		RESET
+#define FLAG_SET		SET
 
 
 
