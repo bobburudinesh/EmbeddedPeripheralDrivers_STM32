@@ -1,0 +1,5 @@
+../drivers/Src/stm32f407xx_i2c_driver.c:23:6:I2C_PeriClockControl	8
+../drivers/Src/stm32f407xx_i2c_driver.c:47:10:RCC_GetPLLOutputClock	1
+../drivers/Src/stm32f407xx_i2c_driver.c:54:10:RCC_GetPCLK1_Value	6
+../drivers/Src/stm32f407xx_i2c_driver.c:85:6:I2C_Init	3
+../drivers/Src/stm32f407xx_i2c_driver.c:141:6:I2C_Peripheral_Control	2
