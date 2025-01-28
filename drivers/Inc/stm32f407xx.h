@@ -217,6 +217,27 @@ typedef struct {
 }SPI_RegDef_t;
 
 
+
+/*
+ * Peripheral definition structure for I2C
+ * */
+
+typedef struct {
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t OAR1;
+	volatile uint32_t OAR2;
+	volatile uint32_t DR;
+	volatile uint32_t SR1;
+	volatile uint32_t SR2;
+	volatile uint32_t CCR;
+	volatile uint32_t TRISE;
+	volatile uint32_t FLTR;
+
+}I2C_RegDef_t;
+
+
+
 /*
  * PERIPHERAL DEFINITIONS(PERIPHERAL BASE ADDRESS TYPE CASTED TO XXX_REGDEF_T)
  * */
@@ -240,6 +261,11 @@ typedef struct {
 #define SPI1	((SPI_RegDef_t*)SPI1_BASEADDR)
 #define SPI2	((SPI_RegDef_t*)SPI2_BASEADDR)
 #define SPI3	((SPI_RegDef_t*)SPI3_BASEADDR)
+
+
+#define I2C1 	((I2C_RegDef_t*)I2C1_BASEADDR)
+#define I2C2 	((I2C_RegDef_t*)I2C2_BASEADDR)
+#define I2C3 	((I2C_RegDef_t*)I2C3_BASEADDR)
 
 
 /*
@@ -479,8 +505,81 @@ typedef struct {
 
 
 
+
+
+/*
+ * Bit Position definitions of I2C Peripheral
+ *
+ * */
+
+/*
+ * CR1 Bit Positions
+ * */
+
+#define I2C_CR1_PE			0
+#define I2C_CR1_SMBUS		1
+#define I2C_CR1_SMBTYPE		3
+#define I2C_CR1_ENARP		4
+#define I2C_CR1_ENPEC		5
+#define I2C_CR1_ENGC		6
+#define I2C_CR1_NOSTRETCH	7
+#define I2C_CR1_START		8
+#define I2C_CR1_STOP		9
+#define I2C_CR1_ACK			10
+#define I2C_CR1_POS			11
+#define I2C_CR1_PEC			12
+#define I2C_CR1_ALERT		13
+#define I2C_CR1_SWRST		15
+
+
+
+/*
+ * CR2 Bit Positions
+ * */
+
+#define I2C_CR2_5_0		0
+#define I2C_CR2_ITERREN 8
+#define I2C_CR2_ITEVTEN 9
+#define I2C_CR2_ITBUFEN 10
+#define I2C_CR2_DMAEN	11
+#define I2C_CR2_LAST	12
+
+
+/*
+ * SR1 Bit Positions
+ * */
+#define I2C_SR1_SB		0
+#define I2C_SR1_ADDR	1
+#define I2C_SR1_BTF		2
+#define I2C_SR1_ADD10	3
+#define I2C_SR1_STOPF	4
+#define I2C_SR1_RXNE	6
+#define I2C_SR1_TXE		7
+#define I2C_SR1_BERR	8
+#define I2C_SR1_ARLO	9
+#define I2C_SR1_AF		10
+#define I2C_SR1_OVR		11
+#define I2C_SR1_PECERR	12
+#define I2C_SR1_TIMEOUT	14
+#define I2C_SR1_SMB_ALERT 15
+
+/*
+ * SR2 Bit Positions
+ * */
+#define I2C_SR2_MSL			0
+#define I2C_SR2_BUSY		1
+#define I2C_SR2_TRA			2
+#define I2C_SR2_GEN_CALL	4
+#define I2C_SR2_SMBDE_FAULT	5
+#define I2C_SR2_SMB_HOST	6
+#define I2C_SR2_DUALF		7
+#define I2C_SR2_PEC_15_8	8
+
+
+
 #include "stm32f407xx_gpio_driver.h"
 #include "stm32f407xx_spi_driver.h"
+#include"stm32f407xx_i2c_driver.h"
 
 
 /*
