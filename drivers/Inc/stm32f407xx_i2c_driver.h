@@ -28,6 +28,12 @@ typedef struct {
 
 
 /*
+ * @ Send Or Receive Data
+ * */
+#define I2C_Data_Send		0
+#define I2C_Data_Receive	1
+
+/*
  * @I2C SCL Speed
  * */
 
@@ -92,6 +98,7 @@ void I2C_DeInit(I2C_RegDef_t *pI2Cx );
  * */
 
 void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t length, uint8_t slaveAddr);
+void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t length, uint8_t slaveAddr);
 /*
  * IRQ Configuration and ISR HAndling
  * */
@@ -104,7 +111,7 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber,uint8_t IRQPriority);
  * */
 uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t FlagName);
 void I2C_Peripheral_Control(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);
-
+void I2C_ConfigACKFlag(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);
 
 
 /*
