@@ -1,0 +1,1 @@
+This Project demonstrates development of perpherals low level implementation from scratch of drivers like GPIO, I2C, SPI, UART for STM32F4xx Microcontrllers. Also some Examples and testfiles for those drivers.
