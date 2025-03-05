@@ -1,14 +1,17 @@
+
 # Embedded Peripheral Drivers for STM32F4xx
 
 ## Overview
-This project provides **bare-metal peripheral drivers** for STM32F4xx microcontrollers, implemented from scratch **without using HAL or CMSIS**. The goal is to develop a deeper understanding of low-level embedded programming by directly interacting with hardware registers.
+This project provides **bare-metal peripheral drivers** for STM32F4xx microcontrollers, implemented from scratch **without using HAL or CMSIS**. The goal is to develop a deeper understanding of low-level embedded programming by directly interacting with hardware registers. This project includes **both polling-based and interrupt-based implementations** for all peripheral drivers, ensuring efficient and responsive communication. **Future plans include implementing DMA-based data transfer** for enhanced performance.
 
 ## Features
-✔️ **GPIO (General Purpose Input/Output) Driver**  
-✔️ **I2C (Inter-Integrated Circuit) Driver**  
-✔️ **SPI (Serial Peripheral Interface) Driver**  
+✔️ **GPIO (General Purpose Input/Output) Driver with Polling and Interrupt Support**  
+✔️ **I2C (Inter-Integrated Circuit) Driver with Polling and Interrupt Support**  
+✔️ **SPI (Serial Peripheral Interface) Driver with Polling and Interrupt Support**  
 ✔️ **Bare-metal register-level programming (No HAL, No CMSIS)**  
 ✔️ **Structured, modular, and reusable driver architecture**  
+✔️ **Upcoming: DMA-based data transfer for optimized performance**  
+
 
 ## Project Structure
 ```
@@ -111,9 +114,9 @@ int main(void) {
 ---
 
 ## Future Enhancements
+🚀 Adding **DMA-based peripheral communication** for optimized performance  
 🚀 **Adding UART Driver**  
 🚀 **Adding PWM Driver**  
-🚀 **Implementing DMA for efficient data transfer** 
 ---
 
 ## Contributing
