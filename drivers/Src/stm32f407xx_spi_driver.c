@@ -216,8 +216,32 @@ static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle) {
  * IRQ Configuration and ISR HAndling
  * */
 // Implement IRQ Hanlders
-void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
-void SPI_IRQPriorityConfig(uint8_t IRQNumber,uint8_t IRQPriority);
+void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi) {
+	if(EnorDi == ENABLE) {
+		if(IRQNumber < 32) {
+			*(NVIC_ISER0) |= (1 << IRQNumber);
+		} else if ( (IRQNumber >=32) && (IRQNumber < 64)) {
+			*(NVIC_ISER1) |= (1 << IRQNumber);
+		} else if ((IRQNumber >=64) && (IRQNumber < 96)) {
+			*(NVIC_ISER2) |= (1 << IRQNumber);
+		}
+	} else {
+		if(IRQNumber < 32) {
+			*(NVIC_ICER0) |= (1 << IRQNumber);
+		} else if ( (IRQNumber >=32) && (IRQNumber < 64)) {
+			*(NVIC_ICER1) |= (1 << IRQNumber);
+		} else if ((IRQNumber >=64) && (IRQNumber < 96)) {
+			*(NVIC_ICER2) |= (1 << IRQNumber);
+		}
+	}
+
+}
+void SPI_IRQPriorityConfig(uint8_t IRQNumber,uint8_t IRQPriority) {
+	uint8_t ip_Reg_Offset = IRQNumber/4; // Interrupt priority register offset
+	uint8_t ip_Reg_Section = IRQNumber % 4; // position in that particular section;
+	uint8_t shift_amount = (8*ip_Reg_Section) + (8 - NO_PR_BITS_IMPLEMENTED);
+	*(NVIC_PR_BASE_ADDR + ip_Reg_Offset) |= (IRQPriority << shift_amount);
+}
 void SPI_IRQHandling(SPI_Handle_t *pHandle) {
 	uint8_t temp1, temp2;
 	//1. Check for TXE
