@@ -43,7 +43,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle) {
 	SPI_PeriClockControl(pSPIHandle->pSPIx, ENABLE);
 	if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD) {
 		// Clear BIDI_Mode
-		temp &= !(1<<SPI_CR1_BIDIMODE);
+		temp &= ~(1<<SPI_CR1_BIDIMODE);
 	} else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD) {
 		// Set BIDI_Mode
 		temp |= 1<<SPI_CR1_BIDIMODE;
@@ -81,11 +81,11 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx ) {
 
 
 //*** This is a blocking call function, it is called blocking because until all the thousand bytes are transferred function will not return.
-void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t  *pTxBuffer, uint32_t length) {
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t  *pTxBuffer, uint32_t length) {
 
 	while(length>0) {
-		// checking if TX buffer is empty else we have to wait; Check for TXE Bit.
-		while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+		// checking if the receiver buffer has data, if it has data it will go past this loop
+		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
 		// Check for DFF bit to know if data is 8 bit or 16 bit.
 		if(pSPIx->CR1 & (1<<SPI_CR1_DFF)) {
 				// 16 bit data frame
@@ -103,9 +103,10 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t  *pTxBuffer, uint32_t length) {
 	}
 }
 
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t  *pRxBuffer, uint32_t length) {
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t  *pRxBuffer, uint32_t length) {
 	while (length > 0) {
-		while(SPI_GetFlagStatus(pSPIx, SPI_SR_RXNE) == FLAG_RESET); // checking if the receiver buffer has data, if it has data it will go past this loop
+		// checking if TX buffer is empty else we have to wait; Check for TXE Bit.
+		while(SPI_GetFlagStatus(pSPIx, SPI_SR_TXE) == FLAG_RESET);
 		// CHeck for 8 bit data DFF or 16 bit DFF
 		if(pSPIx->CR1 & (1<<SPI_CR1_DFF)) {
 			// 16 bit
@@ -149,7 +150,7 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t pSPIHandle, uint8_t  *pRxBuffer , uint32_
 				pSPIHandle.pRxBuffer = pRxBuffer;
 				pSPIHandle.Rx_Len = length;
 				//2. Mark the SPI state as busy in receiving so that no other code can take over same SPI Peripheral until receiving is over
-				pSPIHandle.RxState = SPI_BUSY_IN_TX;
+				pSPIHandle.RxState = SPI_BUSY_IN_RX;
 				// 3. Enable RXNEIE control bit to get interrupt when ever RXE flag is set in SR
 				pSPIHandle.pSPIx->CR2 |= (1<<SPI_CR2_RXNEIE);
 				//4, Data receiving will be handled by ISR.
@@ -162,12 +163,12 @@ static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle){
 	// Check for DFF bit to know if data is 8 bit or 16 bit.
 			if(pSPIHandle->pSPIx->CR1 & (1<<SPI_CR1_DFF)) {
 					// 16 bit data frame
-					*((uint16_t*)pSPIHandle->pTxBuffer) = pSPIHandle->pSPIx->DR;
+				pSPIHandle->pSPIx->DR = *((uint16_t*)pSPIHandle->pTxBuffer);
 					pSPIHandle->Tx_Len--;
 					(uint16_t*)pSPIHandle->pTxBuffer++;
 			} else {
 					// 8 bit data frame
-					*pSPIHandle->pTxBuffer = pSPIHandle->pSPIx->DR;
+				pSPIHandle->pSPIx->DR = *pSPIHandle->pTxBuffer;
 					pSPIHandle->pTxBuffer++;
 			}
 				pSPIHandle->Tx_Len--;
@@ -180,12 +181,12 @@ static void spi_rnxe_interrupt_handle(SPI_Handle_t *pSPIHandle) {
 	// CHeck for 8 bit data DFF or 16 bit DFF
 			if(pSPIHandle->pSPIx->CR1 & (1<<SPI_CR1_DFF)) {
 				// 16 bit
-				pSPIHandle->pSPIx->DR = *((uint16_t*)pSPIHandle->pRxBuffer);
+				*((uint16_t*)pSPIHandle->pRxBuffer) = pSPIHandle->pSPIx->DR;
 				(uint16_t*)pSPIHandle->pRxBuffer++;
 				pSPIHandle->Rx_Len--;
 			} else {
 				// 8 bit
-				pSPIHandle->pSPIx->DR = *pSPIHandle->pRxBuffer;
+				*pSPIHandle->pRxBuffer = pSPIHandle->pSPIx->DR ;
 				pSPIHandle->pRxBuffer++;
 
 			}
